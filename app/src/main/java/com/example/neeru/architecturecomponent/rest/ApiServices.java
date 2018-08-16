@@ -8,7 +8,6 @@ import retrofit2.http.Query;
 
 public interface ApiServices {
     @GET("discover/movie")
-    //Observable<MovieResponse> getMovies(@Query("api_key") String api_key);
     Call<MovieResponse> getMovies(@Query("api_key") String api_key);
 
 }

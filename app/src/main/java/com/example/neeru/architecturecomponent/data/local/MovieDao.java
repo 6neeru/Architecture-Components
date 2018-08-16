@@ -1,6 +1,5 @@
-package com.example.neeru.architecturecomponent.db;
+package com.example.neeru.architecturecomponent.data.local;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
@@ -16,6 +15,8 @@ public interface MovieDao {
     void insertAllMovie(List<ResultsBean> resultsBeanList);
 
     @Query("SELECT * FROM movie_table")
-    LiveData<List<ResultsBean>> getAll();
+    List<ResultsBean> getAll();
 
+    @Query("DELETE FROM movie_table")
+    void deleteAll();
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.neeru.architecturecomponent;
+package com.example.neeru.architecturecomponent.utils;
 
 import android.os.Handler;
 import android.os.Looper;

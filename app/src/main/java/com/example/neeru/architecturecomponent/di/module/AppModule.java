@@ -22,7 +22,7 @@ import android.content.Context;
 
 import com.example.neeru.architecturecomponent.data.AppDataManager;
 import com.example.neeru.architecturecomponent.data.DataManager;
-import com.example.neeru.architecturecomponent.db.MovieRoomDatabase;
+import com.example.neeru.architecturecomponent.data.local.MovieRoomDatabase;
 import com.example.neeru.architecturecomponent.di.qualifier.DatabaseInfo;
 import com.example.neeru.architecturecomponent.utils.AppConstant;
 import com.google.gson.Gson;

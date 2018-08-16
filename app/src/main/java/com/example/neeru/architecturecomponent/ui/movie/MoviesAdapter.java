@@ -25,8 +25,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
     private Context mContext;
 
 
-    public void addItems(List<ResultsBean> blogList) {
-        movieResponseList.addAll(blogList);
+    public void addItems(List<ResultsBean> movieList) {
+        movieResponseList.addAll(movieList);
         notifyDataSetChanged();
     }
 

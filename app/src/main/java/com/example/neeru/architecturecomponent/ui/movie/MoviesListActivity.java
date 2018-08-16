@@ -6,55 +6,35 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.ProgressBar;
 
-import com.example.neeru.architecturecomponent.AppExecutors;
 import com.example.neeru.architecturecomponent.R;
+import com.example.neeru.architecturecomponent.data.local.MovieRoomDatabase;
 import com.example.neeru.architecturecomponent.data.remote.model.ResultsBean;
 import com.example.neeru.architecturecomponent.ui.base.BaseActivity;
+import com.example.neeru.architecturecomponent.utils.AppExecutors;
+import com.example.neeru.architecturecomponent.utils.Helper;
 
 import java.util.List;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MoviesListActivity extends BaseActivity</*ActivityMoviesListBinding,*/ MovieViewModel> implements MovieNavigator {
+public class MoviesListActivity extends BaseActivity<MovieViewModel> implements MovieNavigator {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
-    /* @BindView(R.id.progressBar)
-     ProgressBar progressBar;*/
-    //private List<ResultsBean> mResultsBeanList;
-    @Inject
-    MoviesAdapter moviesAdapter;
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
+
+    private List<ResultsBean> mResultsBeanList;
+    private MoviesAdapter moviesAdapter;
     private AppExecutors appExecutors;
-    // private CompositeDisposable disposables;
-    @Inject
-    LinearLayoutManager mLinearLayoutManager;
-    @Inject
     ViewModelProvider.Factory mViewModelFactory;
 
-    /*@Inject
-    ApiServices apiServices;*/
-
-    @Inject
-    LinearLayoutManager mLayoutManager;
-
     private MovieViewModel mMovieViewModel;
-    //private ActivityMoviesListBinding mActivityMovieBinding;
-
-
-    /*@Override
-    public int getBindingVariable() {
-        return BR.viewModel;
-    }
-
-    @Override
-    public int getLayoutId() {
-        return R.layout.activity_movies_list;
-    }*/
 
     @Override
     public MovieViewModel getViewModel() {
@@ -65,101 +45,64 @@ public class MoviesListActivity extends BaseActivity</*ActivityMoviesListBinding
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //mActivityMovieBinding = getViewDataBinding();
         setContentView(R.layout.activity_movies_list);
         ButterKnife.bind(this);
-
-        mMovieViewModel.setNavigator(this);
-        //setUp();
+        setToolbarTitle();
+        init();
+        setUpRecyclerView();
         subscribeToLiveData();
-
-        /*((MVVMApplication) getApplication()).getApiComponent().inject(MoviesListActivity.this);
-
-        disposables = new CompositeDisposable();*/
-        appExecutors = new AppExecutors();
-        toolbar.setTitle(R.string.title_movie_list);
-        setSupportActionBar(toolbar);
-
+        mMovieViewModel.setNavigator(this);
+        progressBar.setVisibility(View.VISIBLE);
         mMovieViewModel.fetchMovies();
 
-        setUpRecyclerView();
-      /*  final MovieListViewModel viewModel = ViewModelProviders.of(this).get(MovieListViewModel.class);
-        viewModel.getDataFromServer(disposables, apiServices);
-        observeViewModel(viewModel);*/
     }
 
-   /* private void setUp() {
-        mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mActivityMovieBinding.recyclerView.setLayoutManager(mLayoutManager);
-        mActivityMovieBinding.recyclerView.setItemAnimator(new DefaultItemAnimator());
-        mActivityMovieBinding.recyclerView.setAdapter(moviesAdapter);
-    }*/
+    private void init() {
+        appExecutors = new AppExecutors();
+        mMovieViewModel = new MovieViewModel();
+    }
+
+    private void setToolbarTitle() {
+        toolbar.setTitle(R.string.title_movie_list);
+        setSupportActionBar(toolbar);
+    }
 
     private void subscribeToLiveData() {
-        mMovieViewModel.getMovieListLiveData().observe(this, movies -> mMovieViewModel.addMovieItemsToList(movies));
+        mMovieViewModel.getMovieListLiveData().observe(this, movies -> {
+            mMovieViewModel.addMovieItemsToList(movies);
+            mResultsBeanList = mMovieViewModel.getMovieObservableList();
+            saveDataIntoDatabase();
+        });
+    }
+
+    private void saveDataIntoDatabase() {
+        final MovieRoomDatabase db = MovieRoomDatabase.getDatabase(getApplicationContext());
+        appExecutors.diskIO().execute(() -> {
+            db.getMovieDao().deleteAll();
+            db.getMovieDao().insertAllMovie(mResultsBeanList);
+            mResultsBeanList = db.getMovieDao().getAll();
+            appExecutors.mainThread().execute(() -> {
+                // set the adapter
+                moviesAdapter = new MoviesAdapter(mResultsBeanList);
+                recyclerView.setAdapter(moviesAdapter);
+                progressBar.setVisibility(View.GONE);
+            });
+        });
     }
 
 
     private void setUpRecyclerView() {
+        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
+        mLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(mLinearLayoutManager);
-        //recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
 
     }
-
-    /* private void observeViewModel(MovieListViewModel viewModel) {
-        progressBar.setVisibility(View.VISIBLE);
-        // Update the list when the data changes
-        viewModel.getMovieListObservable().observe(this, listDataWrapper -> {
-            progressBar.setVisibility(View.GONE);
-            if (listDataWrapper.getData() != null) {
-                success(listDataWrapper.getData());
-            } else {
-                error(listDataWrapper.getError());
-            }
-
-        });
-
-    }
-
-    private void error(String error) {
-        showAlert(this, error);
-    }
-
-    private void success(MovieResponse data) {
-        mResultsBeanList = data.getResults();
-        final MovieRoomDatabase db = MovieRoomDatabase.getDatabase(getApplicationContext());
-        appExecutors.diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                db.getMovieDao().insertAllMovie(mResultsBeanList);
-                appExecutors.mainThread().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        // set the adapter
-                        db.getMovieDao().getAll();
-                        moviesAdapter = new MoviesAdapter(mResultsBeanList);
-                        recyclerView.setAdapter(moviesAdapter);
-                    }
-                });
-            }
-        });
-
-    }*/
-
-  /*  @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        disposables.clear();
-    }*/
 
     @Override
     public void handleError(Throwable throwable) {
-
+        progressBar.setVisibility(View.GONE);
+        Helper.showAlert(this, throwable.getMessage());
     }
 
-    @Override
-    public void updateMovieList(List<ResultsBean> movieList) {
-        moviesAdapter.addItems(movieList);
-    }
 }

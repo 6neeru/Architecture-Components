@@ -1,4 +1,4 @@
-package com.example.neeru.architecturecomponent;
+package com.example.neeru.architecturecomponent.utils;
 
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;

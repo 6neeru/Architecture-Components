@@ -3,13 +3,9 @@ package com.example.neeru.architecturecomponent.ui.movie;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.v7.widget.LinearLayoutManager;
 
-import com.example.neeru.architecturecomponent.ViewModelProviderFactory;
-import com.example.neeru.architecturecomponent.data.DataManager;
-import com.example.neeru.architecturecomponent.utils.rx.SchedulerProvider;
+import com.example.neeru.architecturecomponent.utils.ViewModelProviderFactory;
 
 import java.util.ArrayList;
-
-import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -17,12 +13,12 @@ import dagger.Provides;
 @Module
 public class MovieModule {
 
-    @Provides
+   /* @Provides
     MovieViewModel movieViewModel(DataManager dataManager,
                                   SchedulerProvider schedulerProvider) {
         return new MovieViewModel(dataManager, schedulerProvider);
     }
-
+*/
     @Provides
     LinearLayoutManager providesLinearLayoutManager(MoviesListActivity moviesListActivity) {
         return new LinearLayoutManager(moviesListActivity);

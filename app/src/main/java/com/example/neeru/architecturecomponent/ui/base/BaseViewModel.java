@@ -12,20 +12,17 @@ import io.reactivex.disposables.CompositeDisposable;
 
 public abstract class BaseViewModel<N> extends ViewModel {
 
-    private final DataManager mDataManager;
+    // private final DataManager mDataManager;
 
     private final ObservableBoolean mIsLoading = new ObservableBoolean(false);
 
-    private final SchedulerProvider mSchedulerProvider;
+    //private final SchedulerProvider mSchedulerProvider;
 
     private CompositeDisposable mCompositeDisposable;
 
     private WeakReference<N> mNavigator;
 
-    public BaseViewModel(DataManager dataManager,
-                         SchedulerProvider schedulerProvider) {
-        this.mDataManager = dataManager;
-        this.mSchedulerProvider = schedulerProvider;
+    public BaseViewModel() {
         this.mCompositeDisposable = new CompositeDisposable();
     }
 
@@ -39,9 +36,9 @@ public abstract class BaseViewModel<N> extends ViewModel {
         return mCompositeDisposable;
     }
 
-    public DataManager getDataManager() {
+   /* public DataManager getDataManager() {
         return mDataManager;
-    }
+    }*/
 
     public ObservableBoolean getIsLoading() {
         return mIsLoading;
@@ -59,9 +56,9 @@ public abstract class BaseViewModel<N> extends ViewModel {
         this.mNavigator = new WeakReference<>(navigator);
     }
 
-    public SchedulerProvider getSchedulerProvider() {
+    /*public SchedulerProvider getSchedulerProvider() {
         return mSchedulerProvider;
-    }
+    }*/
 
 
 }

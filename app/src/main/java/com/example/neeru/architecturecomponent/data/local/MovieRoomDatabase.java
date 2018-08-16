@@ -1,4 +1,4 @@
-package com.example.neeru.architecturecomponent.db;
+package com.example.neeru.architecturecomponent.data.local;
 
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
@@ -8,7 +8,6 @@ import android.content.Context;
 import com.example.neeru.architecturecomponent.data.remote.model.ResultsBean;
 
 @Database(entities = {ResultsBean.class}, version = 1, exportSchema = false)
-/*@TypeConverters({Converter.class})*/
 public abstract class MovieRoomDatabase extends RoomDatabase {
     public abstract MovieDao getMovieDao();
 

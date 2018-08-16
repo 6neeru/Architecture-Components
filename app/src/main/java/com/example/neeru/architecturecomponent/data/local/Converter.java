@@ -1,4 +1,4 @@
-package com.example.neeru.architecturecomponent.db;
+package com.example.neeru.architecturecomponent.data.local;
 
 import android.arch.persistence.room.TypeConverter;
 
