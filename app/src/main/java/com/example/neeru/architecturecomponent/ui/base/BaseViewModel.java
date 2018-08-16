@@ -3,9 +3,6 @@ package com.example.neeru.architecturecomponent.ui.base;
 import android.arch.lifecycle.ViewModel;
 import android.databinding.ObservableBoolean;
 
-import com.example.neeru.architecturecomponent.data.DataManager;
-import com.example.neeru.architecturecomponent.utils.rx.SchedulerProvider;
-
 import java.lang.ref.WeakReference;
 
 import io.reactivex.disposables.CompositeDisposable;

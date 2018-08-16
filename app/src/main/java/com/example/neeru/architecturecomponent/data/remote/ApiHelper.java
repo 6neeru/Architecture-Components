@@ -6,5 +6,4 @@ import io.reactivex.Observable;
 
 public interface ApiHelper {
     Observable<MovieResponse> getMovieList();
-
 }

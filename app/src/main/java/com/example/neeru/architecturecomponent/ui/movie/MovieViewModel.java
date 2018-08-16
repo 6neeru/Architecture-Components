@@ -2,7 +2,7 @@ package com.example.neeru.architecturecomponent.ui.movie;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.databinding.ObservableArrayList;
-import android.support.annotation.NonNull;
+import android.support.annotation.MainThread;
 
 import com.example.neeru.architecturecomponent.data.remote.model.MovieResponse;
 import com.example.neeru.architecturecomponent.data.remote.model.ResultsBean;
@@ -12,9 +12,9 @@ import com.example.neeru.architecturecomponent.ui.base.BaseViewModel;
 
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.schedulers.Schedulers;
 
 public class MovieViewModel extends BaseViewModel<MovieNavigator> {
 
@@ -36,7 +36,7 @@ public class MovieViewModel extends BaseViewModel<MovieNavigator> {
 
     public void fetchMovies() {
         //setIsLoading(true);
-        apiService.getMovies("004cbaf19212094e32aa9ef6f6577f22").enqueue(new Callback<MovieResponse>() {
+        /*apiService.getMovies("004cbaf19212094e32aa9ef6f6577f22").enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(@NonNull Call<MovieResponse> call, @NonNull Response<MovieResponse> movieResponse) {
                 if (movieResponse.body() != null) {
@@ -49,21 +49,26 @@ public class MovieViewModel extends BaseViewModel<MovieNavigator> {
                 getNavigator().handleError(t);
             }
 
-        });
+        });*/
+        getCompositeDisposable().add(apiService.getMovies("004cbaf19212094e32aa9ef6f6577f22").
+                subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<MovieResponse>() {
 
-       /* getCompositeDisposable().add(getDataManager()
-                .getMovieList()
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribe(movieResponse -> {
-                    if (movieResponse != null && movieResponse.getResults() != null) {
-                        movieListLiveData.setValue(movieResponse.getResults());
+                    @Override
+                    public void onSuccess(MovieResponse movieResponse) {
+                        if (movieResponse != null && movieResponse.getResults() != null) {
+                            movieListLiveData.setValue(movieResponse.getResults());
+                        }
                     }
-                    setIsLoading(false);
-                }, throwable -> {
-                    setIsLoading(false);
-                    getNavigator().handleError(throwable);
-                }));*/
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        getNavigator().handleError(throwable);
+                    }
+                })
+        );
+
     }
 
     public MutableLiveData<List<ResultsBean>> getMovieListLiveData() {

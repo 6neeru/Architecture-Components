@@ -20,8 +20,6 @@ import android.app.Application;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 
-import com.example.neeru.architecturecomponent.data.AppDataManager;
-import com.example.neeru.architecturecomponent.data.DataManager;
 import com.example.neeru.architecturecomponent.data.local.MovieRoomDatabase;
 import com.example.neeru.architecturecomponent.di.qualifier.DatabaseInfo;
 import com.example.neeru.architecturecomponent.utils.AppConstant;
@@ -49,12 +47,6 @@ public class AppModule {
         return application;
     }
 
-
-    @Provides
-    @Singleton
-    DataManager provideDataManager(AppDataManager appDataManager) {
-        return appDataManager;
-    }
 
     @Provides
     @DatabaseInfo
