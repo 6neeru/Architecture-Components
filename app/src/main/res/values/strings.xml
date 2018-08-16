@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Architecture Component Demo</string>
+    <string name="title_movie_list">Movies List</string>
+    <string name="title_home">Home</string>
+    <string name="text_button_1">Architecture Component</string>
+    <string name="text_button_2">Constraint Layout</string>
+</resources>
