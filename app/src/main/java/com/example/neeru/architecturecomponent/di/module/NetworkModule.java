@@ -1,4 +1,4 @@
-package com.example.neeru.architecturecomponent.di;
+package com.example.neeru.architecturecomponent.di.module;
 
 import com.example.neeru.architecturecomponent.BuildConfig;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;

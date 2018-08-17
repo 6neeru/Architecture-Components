@@ -1,4 +1,6 @@
-package com.example.neeru.architecturecomponent.di;
+package com.example.neeru.architecturecomponent.di.component;
+
+import com.example.neeru.architecturecomponent.di.module.NetworkModule;
 
 import javax.inject.Singleton;
 

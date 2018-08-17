@@ -40,7 +40,6 @@ public class AppModule {
         return Room.databaseBuilder(context, MovieRoomDatabase.class, dbName).fallbackToDestructiveMigration()
                 .build();
     }
-
     @Provides
     @Singleton
     Context provideContext(Application application) {

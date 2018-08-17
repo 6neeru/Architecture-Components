@@ -1,29 +1,14 @@
 package com.example.neeru.architecturecomponent.di.component;
 
-import android.app.Application;
-
 import com.example.neeru.architecturecomponent.application.MVVMApplication;
-import com.example.neeru.architecturecomponent.di.builder.ActivityBuilder;
 import com.example.neeru.architecturecomponent.di.module.AppModule;
 
 import javax.inject.Singleton;
 
-import dagger.BindsInstance;
 import dagger.Component;
-import dagger.android.AndroidInjectionModule;
 
 @Singleton
-@Component(modules = {AndroidInjectionModule.class, AppModule.class, ActivityBuilder.class})
+@Component(modules = AppModule.class, dependencies = NetworkComponent.class)
 public interface AppComponent {
-
     void inject(MVVMApplication app);
-
-    @Component.Builder
-    interface Builder {
-
-        @BindsInstance
-        Builder application(Application application);
-
-        AppComponent build();
-    }
 }
